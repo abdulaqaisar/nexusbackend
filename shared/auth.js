@@ -14,5 +14,4 @@ function authenticate(req, res, next) {
     res.status(403).send('Invalid Token');
   }
 }
-
 module.exports = { authenticate };
