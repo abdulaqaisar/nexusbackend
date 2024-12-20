@@ -7,42 +7,39 @@ const router = express.Router();
 
 router.post("/register", async (req, res) => {
 
-  const { username, password, email, fullname } = req.body;
-console.log(req.body)
-  if (!username || !password) {
-    // logger.warn("Missing required fields in registration attempt");
+  const {password, email, name } = req.body;
+  console.log(req.body)
+  if (!email || !password || !name) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
   try {
-    const existingUser = await User.findOne({ username });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      logger.warn(`Attempted registration with existing username: ${username}`);
+      logger.warn(`Attempted registration with existing username: ${email}`);
       return res.status(400).json({ message: "User already exists" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
-      username,
       password: hashedPassword,
       email,
-      fullname,
+      name: name,
     });
     await newUser.save();
 
-    logger.info(`User registered successfully: ${username}`);
+    logger.info(`User registered successfully: ${email}`);
 
     res.status(201).json({
       message: "User registered successfully",
       user: {
-        username: newUser.username,
         email: newUser.email,
-        fullname: newUser.fullname,
+        name: newUser.name,
         id: newUser._id,
       },
     });
   } catch (err) {
-    logger.error(`Error during registration for username ${username}: ${err.message}`);
+    logger.error(`Error during registration for username ${email}: ${err.message}`);
     res.status(500).json({ error: "Internal server error during registration" });
   }
 });
@@ -50,9 +47,9 @@ console.log(req.body)
 
 
 router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -61,10 +58,11 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.createToken({ username });
+    const token = jwt.createToken({ email });
     res.status(200).json({
       message: "Login successful",
       token,
+      role: user.role,
     });
   } catch (err) {
     console.error("Error during login:", err);

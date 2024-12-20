@@ -1,27 +1,27 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const analyticsRoutes = require("./routes/analytics");
-
+const cors = require("cors");
 dotenv.config();
 
 const app = express();
-app.use(express.json());
-app.use("/analytics", analyticsRoutes);
+const PORT = process.env.PORT || 6000;
 
-app.get("/", (req, res) => {
-  res.json({
-    groupNo: "123",
-    nameOfGroup: "Project Team",
-    members: ["Majid", "Absar", "Bilal"],
-    projectTitle: "Analytics Server",
-  });
-});
+const corsConfig = {
+  origin: ["*"],
+}
 
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.error("MongoDB Connection Failed:", err));
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("Database connected"))
+  .catch((err) => console.error("Database connection error:", err));
+app.use(express.json());
+app.use(cors())
 
-const PORT = process.env.PORT || 8002;
-app.listen(PORT, () => console.log(`Analytics Server running on port ${PORT}`));
+app.use("/users", require("./routes/users"));
+app.use("/applications", require("./routes/applications"));
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
