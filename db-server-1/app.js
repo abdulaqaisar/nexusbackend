@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const applicationRoutes = require("./routes/application");
 const cors = require("cors");
+const logger = require("./logger"); 
 
 dotenv.config();
 const app = express();
@@ -15,10 +16,12 @@ app.use(express.json());
 app.use(cors(corsConfig));
 app.use("/application", applicationRoutes);
 
-mongoose
-  .connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.error(err));
+  .catch((err) => {
+    logger.error("MongoDB connection failed:", err.message);
+    process.exit(1); 
+  });
 
 app.get("/", (req, res) => {
   res.json({
@@ -27,6 +30,11 @@ app.get("/", (req, res) => {
     members: ["Majid", "Absar", "Bilal"],
     projectTitle: "Application Server",
   });
+});
+
+app.use((err, req, res, next) => {
+  logger.error(`Unhandled error: ${err.message}`);
+  res.status(500).json({ message: "Something went wrong, please try again later." });
 });
 
 const PORT = process.env.PORT || 8001;

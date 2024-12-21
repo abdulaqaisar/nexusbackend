@@ -7,6 +7,7 @@ exports.authenticate = (req, res, next) => {
   if (!token) return res.status(401).json({ error: "Unauthorized" });
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
+    console.log("auth decoded : ",decoded , "  " , JWT_SECRET);
     req.user = decoded;
     next();
   } catch (err) {

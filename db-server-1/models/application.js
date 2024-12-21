@@ -33,6 +33,8 @@ const applicationSchema = new mongoose.Schema({
   },
 
   submittedAt: { type: Date, default: Date.now },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true } 
+
 });
 
 module.exports = mongoose.model("Application", applicationSchema);

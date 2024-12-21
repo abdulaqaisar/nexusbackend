@@ -39,7 +39,7 @@ router.post("/register", async (req, res) => {
       },
     });
   } catch (err) {
-    logger.error(`Error during registration for username ${email}: ${err.message}`);
+    logger.error(`Error during registration for user ${email}: ${err.message}`);
     res.status(500).json({ error: "Internal server error during registration" });
   }
 });
@@ -58,7 +58,7 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.createToken({ email });
+    const token = jwt.createToken({ userId: user._id, email: user.email });
     res.status(200).json({
       message: "Login successful",
       token,
