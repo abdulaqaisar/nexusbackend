@@ -43,33 +43,108 @@ const Dashboard = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState(null);
 
-  useEffect(() => {
-    fetch(`${backend_Url}/application/get`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Fetched applications:', data);
-      })
-      .catch((error) => console.error('Error fetching applications:', error));
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const token = localStorage.getItem('auth_token');
+  //     if (!token) {
+  //       alert("You are not authenticated.");
+  //       return;
+  //     }
+  
+  //     try {
+  //       const response = await fetch(`${backend_Url}/application/get`, {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           "Authorization": `Bearer ${token}`,
+  //         },
+  //       });
+  
+  //       const data = await response.json();
+  
+  //       if (response.ok) {
+  //         console.log(data);
+  //         setApplications(data);
+  //       } else {
+  //         console.error("Error fetching data:", data);
+  //       }
+  //     } catch (error) {
+  //       console.error("An error occurred:", error);
+  //     }
+  //   };
+  
+  //   fetchData();
+  // }, [backend_Url]);
+  
 
   const handleEditClick = (application) => {
     setSelectedApplication(application); 
     setIsPopupOpen(true);
   };
 
-  const handleDeleteApplication = (id) => {
-    setApplications(applications.filter((application) => application.id !== id));
-    console.log(`Deleted application with id: ${id}`);
+  const handleDeleteApplication = async (id) => {
+    const token = localStorage.getItem('auth_token');
+  
+    if (!token) {
+      alert("You are not authenticated.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`${backend_Url}/application/delete?id=${id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+  
+      if (response.ok) {
+        setApplications(applications.filter((application) => application.id !== id));
+        console.log(`Deleted application with id: ${id}`);
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to delete application:", errorData);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
   };
-
-  const handleUpdate = (updatedData) => {
-    setApplications((prevApplications) =>
-      prevApplications.map((app) =>
-        app.id === updatedData.id ? updatedData : app
-      )
-    );
-    setIsPopupOpen(false);
-  };
+  
+  const handleUpdate = async (updatedData) => {
+    const token = localStorage.getItem('auth_token');
+  
+    if (!token) {
+      alert("You are not authenticated.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`${backend_Url}/application/update/${updatedData._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedData),
+      });
+  
+      if (response.ok) {
+        const updatedApplication = await response.json();
+        setApplications((prevApplications) =>
+          prevApplications.map((app) =>
+            app.id === updatedApplication.id ? updatedApplication : app
+          )
+        );
+        setIsPopupOpen(false);
+        console.log("Application updated successfully:", updatedApplication);
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to update application:", errorData);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };  
 
   return (
     <>
@@ -92,7 +167,7 @@ const Dashboard = () => {
               </thead>
               <tbody>
                 {applications.map((app) => (
-                  <tr key={app.id}>
+                  <tr key={app._id}>
                     <td>{app.firstName} {app.lastName}</td>
                     <td>{app.email}</td>
                     <td>

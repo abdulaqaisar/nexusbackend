@@ -5,16 +5,17 @@ const ProtectedRoute = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem('userData'));
-    if (storedData) {
-      const { role } = storedData;
-      console.log(role);
+    const role = localStorage.getItem('userData');
+    console.log(role);
+    if (!role === null) {
 
       if (role === 'Admin') {
         setUser(true);  
       } else {
         setUser(false);
       }
+    } else{
+      setUser(false)
     }
   }, []);
 

@@ -29,7 +29,7 @@ const Navbar = () => {
   }, []);
 
   const dashboardLink = isLoggedIn
-    ? userRole === 'admin'
+    ? userRole === 'Admin'
       ? '/admin-dashboard' 
       : '/student-dashboard'
     : '';
@@ -41,9 +41,11 @@ const Navbar = () => {
         <li>
           <Link to="/">HOME</Link>
         </li>
-        <li>
-          <Link to="/application">APPLY NOW</Link>
-        </li>
+        {isLoggedIn && (
+          <li>
+            <Link to="/application">APPLY NOW</Link>
+          </li>
+        )}
         <li>
           <a href="#program">PROGRAM</a>
         </li>
