@@ -44,7 +44,7 @@ const Dashboard = () => {
   const [selectedApplication, setSelectedApplication] = useState(null);
 
   useEffect(() => {
-    fetch(`${backend_Url}/student/applications`)
+    fetch(`${backend_Url}/application/get`)
       .then((response) => response.json())
       .then((data) => {
         console.log('Fetched applications:', data);
@@ -97,7 +97,7 @@ const Dashboard = () => {
                     <td>{app.email}</td>
                     <td>
                       <button onClick={() => handleEditClick(app)}>Edit</button>
-                      <button onClick={() => handleDeleteApplication(app.id)}>Delete</button>
+                      <button onClick={() => handleDeleteApplication(app._id)}>Delete</button>
                     </td>
                   </tr>
                 ))}

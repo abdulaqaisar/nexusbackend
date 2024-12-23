@@ -7,18 +7,23 @@ const cors = require("cors");
 dotenv.config();
 const app = express();
 
-const corsConfig = {
-  origin: ["*"],
-}
-app.use(express.json(corsConfig));
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:5173',  // Frontend URL
+  methods: ['GET', 'POST', 'PUT','DELETE'],
+}));
+
+app.use(express.json());
+
+// Auth routes
 app.use("/auth", authRoutes);
 
+// MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error(err));
 
+// Root route
 app.get("/", (req, res) => {
   res.json({
     groupNo: "123",
@@ -28,5 +33,5 @@ app.get("/", (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`Auth Server running on ${PORT}`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Auth Server running on port ${PORT}`));

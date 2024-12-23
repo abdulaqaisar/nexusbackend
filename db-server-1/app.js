@@ -3,17 +3,20 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const applicationRoutes = require("./routes/application");
 const cors = require("cors");
-const logger = require("./logger"); 
+const logger = require("./logger");
 
 dotenv.config();
 const app = express();
 
-const corsConfig = {
-  origin: ["*"],
-}
+app.use(cors({
+  origin: 'http://localhost:5173',  // Frontend URL
+  methods: ['GET', 'POST', 'PUT'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, 
+}));
 
-app.use(express.json());
-app.use(cors(corsConfig));
+app.use(express.json()); 
+
 app.use("/application", applicationRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
@@ -37,5 +40,5 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Something went wrong, please try again later." });
 });
 
-const PORT = process.env.PORT || 8001;
-app.listen(PORT, () => console.log(`Application Server running on ${PORT}`));
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Application Server running on port ${PORT}`));

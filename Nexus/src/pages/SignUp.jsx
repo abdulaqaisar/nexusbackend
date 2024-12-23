@@ -4,8 +4,8 @@ import styled from "styled-components";
 import '../Styles/Login.css'
 import Navbar from "../components/Navbar";
 
-const backend_Url = import.meta.env.VITE_BACKEND_API;
-
+// const backend_Url = import.meta.env.VITE_BACKEND_API;
+const backend_Url = import.meta.env.VITE_AUTH_API;
 const SignUp = () => {
   const [toggle, setToggle] = useState(false);
   const [loader, setLoader] = useState(false);

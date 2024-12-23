@@ -15,12 +15,13 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role'); 
+    const token = localStorage.getItem('auth_token');
+    const role = localStorage.getItem('userData'); 
 
     if (token) {
       setIsLoggedIn(true);
       setUserRole(role); 
+      console.log("ROLE : ",role)
     } else {
       setIsLoggedIn(false);
       setUserRole('');

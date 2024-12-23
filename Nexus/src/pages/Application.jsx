@@ -66,10 +66,16 @@ const Application = () => {
     e.preventDefault();
     
     try {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        alert("You are not authenticated.");
+        return;
+      }    
       const response = await fetch(`${backend_Url}/application/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });

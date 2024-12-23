@@ -4,7 +4,8 @@ import styled from "styled-components";
 import '../Styles/Login.css'
 import Navbar from "../components/Navbar";
 
-const backend_Url = import.meta.env.VITE_BACKEND_API;
+// const backend_Url = import.meta.env.VITE_BACKEND_API;
+const backend_Url = import.meta.env.VITE_AUTH_API;
 
 const Login = () => {
   const [toggle, setToggle] = useState(false);
@@ -39,8 +40,12 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("userData", JSON.stringify(data));
+        // localStorage.setItem("userData", JSON.stringify(data));
+        localStorage.setItem("auth_token", data.token);
+        console.log("DATA", data);
         // const userData = JSON.parse(storedData)
+        const { role, userId, email } = data;
+         localStorage.setItem("userData",role);
         if (data.role === 'Admin'){
             navigate("/admin-dashboard");
         } else {
