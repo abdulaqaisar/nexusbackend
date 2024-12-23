@@ -1,0 +1,47 @@
+.footer {
+    margin: 10px auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #797979;
+    padding: 15px 0;
+}
+
+.footer ul li {
+    list-style: none;
+    display: inline-block;
+    margin-left: 20px;
+}
+
+/* Button Styles */
+.footer button {
+    background-color: #000F38; /* Primary color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.footer button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+.footer button:focus {
+    outline: none; /* Remove default outline */
+}
+
+/* ------ media query ------ */
+@media (max-width: 768px) {
+    .footer {
+        display: block;
+        text-align: center;
+    }
+    .footer ul li {
+        margin: 10px;
+    }
+    .footer ul {
+        margin: 10px;
+    }
+}

@@ -1,0 +1,96 @@
+.application{
+    padding: 80px;
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(rgba(8,0,58,0.7),rgba(8,0,58,0.7)), url('../assets/Hero.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.application form {
+    
+    width: 60%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+  }
+  
+  .application h1, h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  .application  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+  }
+  
+  .application input[type="text"],
+  .application input[type="email"],
+  .application input[type="tel"],
+  .application input[type="date"],
+  .application input[type="number"],
+  .application textarea,
+  .application select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .application textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  .application button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .application button[type="submit"]:hover {
+    background-color: #45a049;
+  }
+  
+  /* Section Dividers */
+  .application div {
+    margin-bottom: 20px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    form {
+      width: 90%;
+    }
+  
+    h1, h2 {
+      font-size: 20px;
+    }
+  
+    button[type="submit"] {
+      font-size: 14px;
+    }
+  }
+  

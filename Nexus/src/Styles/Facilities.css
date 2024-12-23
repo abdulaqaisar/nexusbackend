@@ -1,0 +1,57 @@
+.Facilities {
+    margin: 80px auto;
+    width: 90%;
+    text-align: center;
+    align-items: center;
+  }
+  
+  .facility {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+  }
+  
+  .facility img {
+    width: 80%;
+    border-radius: 30px;
+    justify-content: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .facilities-col {
+    width: 30%;
+    background: #0a1136;
+    border-radius: 20px;
+    margin-bottom: 5%;
+    margin-top: 5%;
+  
+  }
+  
+  .facilities-col img {
+    width: 100%;
+    border-radius: 30px;
+  }
+  
+  .facilities-col h3 {
+    margin: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #ffff;
+  
+  }
+  
+  /* ------ media query ------ */
+  @media (max-width: 768px) {
+    .facility {
+      flex-wrap: wrap;
+    }
+    .facilities-col {
+      width: 100%;
+      margin: 10px;
+    }
+  
+  }
