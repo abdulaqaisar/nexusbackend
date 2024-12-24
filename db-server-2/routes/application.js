@@ -9,7 +9,7 @@ router.use(authorizeAdmin);
 
 router.get("/getApplications", async (req, res) => {
   try {
-    const applications = await Application.find();
+    const applications = await Application.find().populate("userId", "name email");
     if (applications.length === 0) {
       return res.status(404).json({ message: "No applications found" });
     }
@@ -47,10 +47,23 @@ router.post("/createApplications", async (req, res) => {
 
 router.put("/updateApplication/:id", async (req, res) => {
   try {
+
+    const { userId , ...updateFields} = req.body;
+    const application = await Application.findOne({
+      _id: req.params.id,
+      userId: userId,
+    });
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found for the specified user",
+      });
+    }
+
     const updatedApplication = await Application.findByIdAndUpdate(
       req.params.id,
-      req.body,
-      { new: true }
+      updateFields,
+      { new: true } 
     );
 
     if (!updatedApplication) {
@@ -76,16 +89,20 @@ router.put("/updateApplication/:id", async (req, res) => {
 
 router.delete("/deleteApplication/:id", async (req, res) => {
   try {
-    const deletedApplication = await Application.findByIdAndDelete(
-      req.params.id
-    );
+    const { userId } = req.body; 
+    const application = await Application.findOne({
+      _id: req.params.id,
+      userId: userId,
+    });
 
-    if (!deletedApplication) {
+    if (!application) {
       return res.status(404).json({
         success: false,
-        message: "Application not found",
+        message: "Application not found for the specified user",
       });
     }
+    
+    await Application.findByIdAndDelete(req.params.id);
 
     res.status(200).json({
       success: true,
@@ -99,5 +116,6 @@ router.delete("/deleteApplication/:id", async (req, res) => {
     });
   }
 });
+
 
 module.exports = router;
