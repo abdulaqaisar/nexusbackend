@@ -3,12 +3,12 @@ import '../../Styles/admin/dashboard.css';
 import Navbar from '../../components/Navbar';
 import EditPopUp from '../../components/EditPopUp';
 
-const backend_Url = import.meta.env.VITE_BACKEND_API_SERVER_1;
+const backend_Url = import.meta.env.VITE_BACKEND_API_SERVER_2;
 
 const AdminDashboard = () => {
-  const [view, setView] = useState('applications'); // "applications" or "students"
-  const [applications, setApplications] = useState([]);
-  const [students, setStudents] = useState([]);
+  const [view, setView] = useState('applications');
+  const [applications, setApplications] = useState(null);
+  const [students, setStudents] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState(null);
 
@@ -20,7 +20,7 @@ const AdminDashboard = () => {
     }
 
     try {
-      const response = await fetch(`${backend_Url}/application/get`, {
+      const response = await fetch(`${backend_Url}/applications/getApplications`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -30,8 +30,9 @@ const AdminDashboard = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setApplications(data);
+        setApplications(data.data);
       } else {
+        setApplications(0)
         console.error('Error fetching applications:', data);
       }
     } catch (error) {
@@ -47,7 +48,7 @@ const AdminDashboard = () => {
     }
 
     try {
-      const response = await fetch(`${backend_Url}/students/get`, {
+      const response = await fetch(`${backend_Url}/users/getUsers`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -57,8 +58,9 @@ const AdminDashboard = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setStudents(data);
+        setStudents(data.data);
       } else {
+        setStudents(0)
         console.error('Error fetching students:', data);
       }
     } catch (error) {
@@ -67,16 +69,16 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    if (view === 'applications') {
+    if (view === 'applications' && applications === null) {
       fetchApplications();
-    } else if (view === 'students') {
+    } else if (view === 'students' && students === null) {
       fetchStudents();
     }
   }, [view]);
 
   const handleDeleteApplication = async (id) => {
     try {
-      const response = await fetch(`${backend_Url}/application/delete?id=${id}`, {
+      const response = await fetch(`${backend_Url}/applications/deleteApplication/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -95,7 +97,7 @@ const AdminDashboard = () => {
 
   const handleDeleteStudent = async (id) => {
     try {
-      const response = await fetch(`${backend_Url}/students/delete?id=${id}`, {
+      const response = await fetch(`${backend_Url}/users/deleteUser/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -117,13 +119,51 @@ const AdminDashboard = () => {
     setIsPopupOpen(true);
   };
 
-  const handleUpdate = (updatedApplication) => {
-    setApplications((prev) =>
-      prev.map((app) =>
-        app._id === updatedApplication._id ? updatedApplication : app
-      )
-    );
-    setIsPopupOpen(false);
+  const handleUpdate = async (updatedData) => {
+    const token = localStorage.getItem('auth_token');
+  
+    if (!token) {
+      alert("You are not authenticated.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`${backend_Url}/applications/updateApplication/${updatedData._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedData),
+      });
+  
+      if (response.ok) {
+        const updatedApplication = await response.json();
+  
+        // Update the applications state with the updated application
+        setApplications((prevApplications) =>
+          prevApplications.map((app) =>
+            app._id === updatedApplication.data._id ? updatedApplication.data : app
+          )
+        );
+  
+        setIsPopupOpen(false);
+        alert("Application updated successfully.");
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to update application:", errorData);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
+  
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('userData');
+    alert('You have been logged out.');
+    window.location.reload();
   };
 
   return (
@@ -143,13 +183,16 @@ const AdminDashboard = () => {
           >
             Students
           </button>
+          <button className="logout-button" onClick={handleLogout}>
+            Logout
+          </button>
         </aside>
 
         <main className="content">
           {view === 'applications' && (
             <div className="applications-view">
               <h2>Applications</h2>
-              {applications.length > 0 ? (
+              {applications && applications.length > 0 ? (
                 <table>
                   <thead>
                     <tr>
@@ -171,6 +214,8 @@ const AdminDashboard = () => {
                     ))}
                   </tbody>
                 </table>
+              ) : applications === null ? (
+                <p>Loading...</p>
               ) : (
                 <p>No applications found.</p>
               )}
@@ -180,7 +225,7 @@ const AdminDashboard = () => {
           {view === 'students' && (
             <div className="students-view">
               <h2>Registered Students</h2>
-              {students.length > 0 ? (
+              {students && students.length > 0 ? (
                 <table>
                   <thead>
                     <tr>
@@ -195,12 +240,14 @@ const AdminDashboard = () => {
                         <td>{student.name}</td>
                         <td>{student.email}</td>
                         <td>
-                          <button onClick={() => handleDeleteStudent(student.id)}>Delete</button>
+                          <button onClick={() => handleDeleteStudent(student._id)}>Delete</button>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+              ) : students === null ? (
+                <p>Loading...</p>
               ) : (
                 <p>No students found.</p>
               )}

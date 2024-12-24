@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const logger = require("../logger");
+// const logger = require("../logger");
 require("dotenv").config();
 
 const { JWT_SECRET } = process.env; 
@@ -38,7 +38,7 @@ const authenticate = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    logger.error(`Authentication error: ${error.message}`);
+    // logger.error(`Authentication error: ${error.message}`);
     if (error.name === "JsonWebTokenError") {
       return res.status(400).json({ message: "Invalid token" });
     } else if (error.name === "TokenExpiredError") {
@@ -49,12 +49,13 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-module.exports = { authenticate };
 
 
-exports.authorizeAdmin = (req, res, next) => {
+const authorizeAdmin = (req, res, next) => {
   if (req.user.role !== "Admin") {
     return res.status(403).json({ error: "Access denied" });
   }
   next();
 };
+
+module.exports = { authenticate, authorizeAdmin };

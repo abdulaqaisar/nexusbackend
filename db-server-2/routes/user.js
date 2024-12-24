@@ -7,7 +7,7 @@ const router = express.Router();
 router.use(authenticate);
 router.use(authorizeAdmin);
 
-router.get("getUsers/", async (req, res) => {
+router.get("/getUsers", async (req, res) => {
   try {
     const users = await User.find({ role: "User" });
     if (users.length === 0) {
@@ -29,8 +29,6 @@ router.get("getUsers/", async (req, res) => {
       error: error.message,
     });
   }
-  const users = await User.find();
-  res.json(users);
 });
 
 router.post("createUser/", async (req, res) => {
@@ -54,13 +52,12 @@ router.put("updateUser/:id", async (req, res) => {
   }
 });
 
-router.delete("deleteUser/:id", async (req, res) => {
+router.delete("/deleteUser/:id", async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
     res.status(200).json({
       success: true,
       message: "User deleted successfully",
-      data: deletedUser,
     });  
   } catch (error) {
     res.status(500).json({

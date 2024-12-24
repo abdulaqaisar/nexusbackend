@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const userProtectedRoute = ({ children }) => {
+const UserProtectedRoute = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     const role = localStorage.getItem('userData');
-    console.log(role);
-    if (!role === null) {
-
+    if (role) {
       if (role === 'User') {
-        setUser(true);  
+        setUser(true);
       } else {
         setUser(false);
       }
-    } else{
-      setUser(false)
+    } else {
+      setUser(false);
     }
   }, []);
+
+  if (user === null) {
+    return <div>Loading...</div>;
+  }
 
   if (user === false) {
     return <Navigate to="/" />;
@@ -26,4 +28,4 @@ const userProtectedRoute = ({ children }) => {
   return children;
 };
 
-export default userProtectedRoute;
+export default UserProtectedRoute;

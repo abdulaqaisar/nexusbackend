@@ -43,38 +43,38 @@ const Dashboard = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState(null);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const token = localStorage.getItem('auth_token');
-  //     if (!token) {
-  //       alert("You are not authenticated.");
-  //       return;
-  //     }
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        alert("You are not authenticated.");
+        return;
+      }
   
-  //     try {
-  //       const response = await fetch(`${backend_Url}/application/get`, {
-  //         method: "GET",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           "Authorization": `Bearer ${token}`,
-  //         },
-  //       });
+      try {
+        const response = await fetch(`${backend_Url}/application/get`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
   
-  //       const data = await response.json();
+        const data = await response.json();
   
-  //       if (response.ok) {
-  //         console.log(data);
-  //         setApplications(data);
-  //       } else {
-  //         console.error("Error fetching data:", data);
-  //       }
-  //     } catch (error) {
-  //       console.error("An error occurred:", error);
-  //     }
-  //   };
+        if (response.ok) {
+          console.log(data);
+          setApplications(data);
+        } else {
+          console.error("Error fetching data:", data);
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    };
   
-  //   fetchData();
-  // }, [backend_Url]);
+    fetchData();
+  }, [backend_Url]);
   
 
   const handleEditClick = (application) => {
@@ -136,7 +136,7 @@ const Dashboard = () => {
           )
         );
         setIsPopupOpen(false);
-        console.log("Application updated successfully:", updatedApplication);
+        alert("Application updated successfully:");
       } else {
         const errorData = await response.json();
         console.error("Failed to update application:", errorData);
@@ -146,6 +146,13 @@ const Dashboard = () => {
     }
   };  
 
+  const handleLogout = () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('userData');
+    alert('You have been logged out.');
+    window.location.reload();
+  };
+
   return (
     <>
       <Navbar />
@@ -153,6 +160,9 @@ const Dashboard = () => {
         <aside className="sidebar">
           <h3>Dashboard</h3>
           <p>Welcome, Student!</p>
+          <button className="logout-button" onClick={handleLogout}>
+            Logout
+          </button>
         </aside>
         <main className="content">
           <h2>My Applications</h2>
