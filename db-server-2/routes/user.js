@@ -1,5 +1,6 @@
 const express = require("express");
 const User = require("../models/user");
+const Application = require("../models/application");
 const { authenticate, authorizeAdmin } = require("../utils/auth");
 
 const router = express.Router();
@@ -31,7 +32,7 @@ router.get("/getUsers", async (req, res) => {
   }
 });
 
-router.post("createUser/", async (req, res) => {
+router.post("/createUser", async (req, res) => {
   try {
     const newUser = new User(req.body);
     await newUser.save();
@@ -52,20 +53,50 @@ router.put("updateUser/:id", async (req, res) => {
   }
 });
 
+// router.delete("/deleteUser/:id", async (req, res) => {
+//   try {
+//     await User.findByIdAndDelete(req.params.id);
+//     res.status(200).json({
+//       success: true,
+//       message: "User deleted successfully",
+//     });  
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Error deleting user",
+//       error: error.message,
+//     });
+//     }
+// });
+
 router.delete("/deleteUser/:id", async (req, res) => {
   try {
-    await User.findByIdAndDelete(req.params.id);
+    const userId = req.params.id;
+
+    await Application.deleteMany({ userId });
+
+    // Delete the user
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
     res.status(200).json({
       success: true,
-      message: "User deleted successfully",
-    });  
+      message: "User and associated applications deleted successfully",
+    });
   } catch (error) {
+    console.error("Error deleting user and associated applications:", error);
     res.status(500).json({
       success: false,
-      message: "Error deleting user",
+      message: "Error deleting user and associated applications",
       error: error.message,
     });
-    }
+  }
 });
+
 
 module.exports = router;
