@@ -89,20 +89,17 @@ router.put("/updateApplication/:id", async (req, res) => {
 
 router.delete("/deleteApplication/:id", async (req, res) => {
   try {
-    const { userId } = req.body; 
-    const application = await Application.findOne({
-      _id: req.params.id,
-      userId: userId,
-    });
+    const applicationId = req.params.id;
 
+    const application = await Application.findById(applicationId);
     if (!application) {
       return res.status(404).json({
         success: false,
-        message: "Application not found for the specified user",
+        message: "Application not found",
       });
     }
-    
-    await Application.findByIdAndDelete(req.params.id);
+
+    await Application.findByIdAndDelete(applicationId);
 
     res.status(200).json({
       success: true,

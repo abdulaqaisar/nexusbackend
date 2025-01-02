@@ -76,11 +76,13 @@ const AdminDashboard = () => {
     }
   }, [view]);
 
+  
   const handleDeleteApplication = async (id) => {
     try {
       const response = await fetch(`${backend_Url}/applications/deleteApplication/${id}`, {
         method: 'DELETE',
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
         },
       });
@@ -100,6 +102,7 @@ const AdminDashboard = () => {
       const response = await fetch(`${backend_Url}/users/deleteUser/${id}`, {
         method: 'DELETE',
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
         },
       });
