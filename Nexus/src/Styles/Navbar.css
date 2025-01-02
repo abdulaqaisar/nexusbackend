@@ -1,16 +1,19 @@
 nav {
     width: 100%;
-   /* background: #333;*/
-    color: #fff ;
-    padding: 4px 4px;
+    color: #fff;
+    padding: 2px 4px;
     position: fixed;
     top: 0;
     left: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    backdrop-filter: blur(10px); /* Adds blur effect */
+    -webkit-backdrop-filter: blur(10px); /* For Safari support */
     z-index: 10;
 }
+
 .logo{
     width: 90px;
 }

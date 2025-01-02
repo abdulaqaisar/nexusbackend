@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import '../styles/application.css'
+import '../styles/Application.css'
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -212,7 +212,7 @@ const Application = () => {
             />
         </div>
 
-        <h2>Academic Information</h2>
+        <h2 className="h2Color">Academic Information</h2>
         <div>
             <label>Program:</label>
             <input
